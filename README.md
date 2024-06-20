@@ -32,3 +32,15 @@ awk -v start="2024-06-20 10:05:00" '
         }
     }
 ' path_to_your_log_file.log
+
+
+
+
+awk -v end="$(date -d '1 hour ago' '+%Y-%m-%d %H:%M:%S')" '
+    {
+        timestamp = substr($0, 1, 19);  # Extract datetime part assuming it's in the first 19 characters
+        if (timestamp >= end) {
+            print
+        }
+    }
+' path_to_your_log_file.log
