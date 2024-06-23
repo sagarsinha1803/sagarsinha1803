@@ -1,17 +1,22 @@
 awk '
-/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2},\d{3}/ { 
-    if (entry) { 
-        entries[++count] = entry;
+/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2},\d{3}/ {
+    if (entry) {
+        entries[count % 10] = entry;
+        count++;
         entry = "";
-    } 
+    }
 }
 {
     entry = entry $0 "\n";
 }
-END { 
-    if (entry) entries[++count] = entry;
-    for (i = count-9; i <= count; i++) {
-        if (i > 0) print entries[i];
+END {
+    if (entry) {
+        entries[count % 10] = entry;
+        count++;
+    }
+    start = count > 10 ? count - 10 : 0;
+    for (i = start; i < count; i++) {
+        print entries[i % 10];
     }
 }
 ' logfile.log
