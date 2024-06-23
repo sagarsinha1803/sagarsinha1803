@@ -1,12 +1,17 @@
-awk -v last_hour=$(date -d '1 hour ago' '+%Y-%m-%d %H:%M:%S') '
-BEGIN { gsub(/[-:]/, "", last_hour); }
-/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2},\d{3}/ {
-  datetime = substr($1, 1, 10) substr($2, 1, 8);
-  gsub(/[-:]/, "", datetime);
-  if (datetime >= last_hour) printing = 1;
-  else printing = 0;
+awk '
+/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2},\d{3}/ { 
+    if (entry) { 
+        entries[++count] = entry;
+        entry = "";
+    } 
 }
 {
-  if (printing) print;
+    entry = entry $0 "\n";
+}
+END { 
+    if (entry) entries[++count] = entry;
+    for (i = count-9; i <= count; i++) {
+        if (i > 0) print entries[i];
+    }
 }
 ' logfile.log
