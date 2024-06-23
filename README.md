@@ -14,9 +14,9 @@ END {
         entries[count % 10] = entry;
         count++;
     }
-    start = count > 10 ? count - 10 : 0;
+    start = (count > 10) ? count - 10 : 0;
     for (i = start; i < count; i++) {
-        print entries[i % 10];
+        printf "%s", entries[i % 10];
     }
 }
 ' logfile.log
